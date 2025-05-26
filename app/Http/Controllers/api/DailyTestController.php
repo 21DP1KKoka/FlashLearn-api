@@ -18,9 +18,7 @@ class DailyTestController extends Controller
             foreach ($user->cardCollections as $cardCollection) {
                 $card_ids = [];
                 foreach ($cardCollection->cards as $card) {
-                    $date = Carbon::now();
                     $cardEndResult = CardEndCoefficient::where('card_id', $card->id)->where('user_id', $user->id)->first();
-//                    dd($cardEndResult->created_at->toDateString());
 
                     switch ($cardEndResult->updated_at->toDateString()) {
                         case Carbon::now()->toDateString(): // all smaller than 1
