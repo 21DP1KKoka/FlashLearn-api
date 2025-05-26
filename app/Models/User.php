@@ -4,6 +4,9 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -45,5 +48,30 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function cardCollections(): HasMany
+    {
+        return $this->hasMany(CardCollection::class);
+    }
+
+    public function cardResults(): HasMany
+    {
+        return $this->hasMany(CardResult::class);
+    }
+
+//    public function cardResults(): belongsToMany
+//    {
+//        return $this->belongsToMany(Card::class)->withPivot('coefficient', 'card_collection_id')->withTimestamps()->using(CardUser::class);
+//    }
+
+    public function cardEndCoefficients(): HasMany
+    {
+        return $this->hasMany(CardEndCoefficient::class);
+    }
+
+    public function dailyTest(): HasOne
+    {
+        return $this->hasOne(DailyTest::class);
     }
 }

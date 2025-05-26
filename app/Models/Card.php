@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class CardCollection extends Model
+class Card extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -14,24 +15,14 @@ class CardCollection extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'title',
-        'user_id',
-        'firstuse',
+        'card_front',
+        'card_back',
+        'card_collection_id',
     ];
 
-    public function user(): BelongsTo
+    public function cardCollection(): BelongsTo
     {
-        return $this->belongsTo(User::class);
-    }
-
-    public function cards(): HasMany
-    {
-        return $this->hasMany(Card::class);
-    }
-
-    public function activities(): HasMany
-    {
-        return $this->hasMany(Activity::class);
+        return $this->belongsTo(CardCollection::class);
     }
 
     public function cardResults(): HasMany
@@ -43,4 +34,5 @@ class CardCollection extends Model
     {
         return $this->hasMany(CardEndCoefficient::class);
     }
+
 }

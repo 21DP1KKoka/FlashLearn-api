@@ -25,11 +25,10 @@ class RegisterRequest extends FormRequest
     {
         Log::info('Validating rules:', $this->all());
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255', // to remove
             'nickname' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'password_confirmation' => 'required|same:password',
         ];
     }
 
