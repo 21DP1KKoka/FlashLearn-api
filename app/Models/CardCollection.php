@@ -29,11 +29,6 @@ class CardCollection extends Model
         return $this->hasMany(Card::class);
     }
 
-    public function activities(): HasMany
-    {
-        return $this->hasMany(Activity::class);
-    }
-
     public function cardResults(): HasMany
     {
         return $this->hasMany(CardResult::class);

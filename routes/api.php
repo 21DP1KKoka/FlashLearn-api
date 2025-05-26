@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\api\ActivityController;
 use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\api\CardCollectionController;
 use App\Http\Controllers\api\CardController;
@@ -23,6 +22,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('users', UserController::class);
     Route::apiResource('card_collections', CardCollectionController::class);
     Route::apiResource('cards', CardController::class);
-    Route::apiResource('activities', ActivityController::class);
     Route::apiResource('card_results', CardResultController::class);
 });

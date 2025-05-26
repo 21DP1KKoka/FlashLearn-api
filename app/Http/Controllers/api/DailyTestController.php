@@ -80,7 +80,6 @@ class DailyTestController extends Controller
                             break;
                     }
                 }
-                dd($card_ids);
                 DailyTest::create([
                     'user_id' => $user->id,
                     'card_collection_id' => $cardCollection->id,
