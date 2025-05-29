@@ -47,7 +47,13 @@ class CardEndCoefficientController extends Controller
                         }
                     }
                     else {
-                        $cardEndCoefficient = CardEndCoefficient::create([
+                        CardResult::create([
+                            'card_id' => $card->id,
+                            'user_id' => $user->id,
+                            'card_collection_id' => $cardCollection->id,
+                            'coefficient' => 0,
+                        ]);
+                        CardEndCoefficient::create([
                             'card_id' => $card->id,
                             'user_id' => $user->id,
                             'card_collection_id' => $cardCollection->id,
