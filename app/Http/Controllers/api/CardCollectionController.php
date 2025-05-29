@@ -57,10 +57,6 @@ class CardCollectionController extends Controller
         return new CardCollectionResource($cardCollection);
     }
 
-    public function showWithStats(CardCollection $cardCollection): CardCollectionStatsResource {
-        return new CardCollectionStatsResource($cardCollection);
-    }
-
     /**
      * Show the form for editing the specified resource.
      */

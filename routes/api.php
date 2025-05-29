@@ -3,10 +3,10 @@
 use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\api\CardCollectionController;
 use App\Http\Controllers\api\CardController;
+use App\Http\Controllers\api\CardEndCoefficientController;
 use App\Http\Controllers\api\CardResultController;
 use App\Http\Controllers\api\DailyTestController;
 use App\Http\Controllers\api\UserController;
-use App\Http\Controllers\CardEndCoefficientController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -23,4 +23,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('card_collections', CardCollectionController::class);
     Route::apiResource('cards', CardController::class);
     Route::apiResource('card_results', CardResultController::class);
+    Route::get('/collection_statistics/{id}', [CardEndCoefficientController::class, 'returnStatistics']);
 });
