@@ -23,8 +23,8 @@ class CardRequest extends FormRequest
     {
         return [
             'card_collection_id' => 'required|integer|exists:card_collections,id',
-            'card_front' => 'required|string',
-            'card_back' => 'required|string',
+            'card_front' => 'required|string|max:256',
+            'card_back' => 'required|string|max:256',
         ];
     }
 }

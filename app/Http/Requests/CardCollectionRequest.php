@@ -22,8 +22,7 @@ class CardCollectionRequest extends FormRequest
     public function rules(): array
     {
         return [
-//            'user_id' => 'required|integer|exists:users,id',
-            'title' => 'required|string',
+            'title' => 'required|string|max:32',
         ];
     }
 }

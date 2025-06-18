@@ -59,11 +59,6 @@ class User extends Authenticatable
         return $this->hasMany(CardResult::class);
     }
 
-//    public function cardResults(): belongsToMany
-//    {
-//        return $this->belongsToMany(Card::class)->withPivot('coefficient', 'card_collection_id')->withTimestamps()->using(CardUser::class);
-//    }
-
     public function cardEndCoefficients(): HasMany
     {
         return $this->hasMany(CardEndCoefficient::class);
@@ -72,5 +67,10 @@ class User extends Authenticatable
     public function dailyTest(): HasOne
     {
         return $this->hasOne(DailyTest::class);
+    }
+
+    public function sharedCollections(): HasMany
+    {
+        return $this->hasMany(SharedCollection::class);
     }
 }

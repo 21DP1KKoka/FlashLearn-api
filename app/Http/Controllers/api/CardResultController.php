@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CardResultRequest;
 use App\Http\Resources\CardResultResource;
 use App\Models\CardResult;
+use App\Models\DailyTest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -37,6 +38,26 @@ class CardResultController extends Controller
                 'coefficient' => $cardResult['coefficient'],
             ]);
         }
+        response()->json(204);
+    }
+
+    /**
+     * @param CardResultRequest $request
+     * @return void
+     */
+    public function storeDaily(CardResultRequest $request) {
+        $validated = $request->validated();
+        $user = auth()->user();
+        foreach ($validated['card_results'] as $cardResult) {
+            CardResult::create([
+                'card_id' => $cardResult['card_id'],
+                'user_id' => $user->id,
+                'card_collection_id' => $validated['card_collection_id'],
+                'coefficient' => $cardResult['coefficient'],
+            ]);
+        }
+        $dailyTest = DailyTest::where('user_id', $user->id)->where('card_collection_id', $validated['card_collection_id'])->first();
+        $dailyTest->update(['card_ids' => []]);
         response()->json(204);
     }
 

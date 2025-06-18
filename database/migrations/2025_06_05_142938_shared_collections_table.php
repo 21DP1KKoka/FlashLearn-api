@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('card_results', function (Blueprint $table) {
+        Schema::create('shared_collections', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('card_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('card_collection_id')->constrained()->onDelete('cascade');
-            $table->integer('coefficient');
             $table->timestamps();
         });
     }

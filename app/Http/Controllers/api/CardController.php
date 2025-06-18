@@ -71,11 +71,20 @@ class CardController extends Controller
      * @return JsonResponse
      */
     public function destroy(Card $card): JsonResponse {
-        $card->delete();
+        $user = auth()->user();
+        if ($card->cardCollection->user_id == $user->id || $user->id == 1) {
+
+            $card->delete();
+            return response()->json([
+                'data' => [
+                    'message' => 'Ieraksts veiksmīgi dzēsts!',
+                ],
+            ], 204);
+        }
         return response()->json([
             'data' => [
-                'message' => 'Ieraksts veiksmīgi dzēsts!',
+                'message' => 'Jums nepieder šī kartīte!',
             ],
-        ], 204);
+        ], 403);
     }
 }

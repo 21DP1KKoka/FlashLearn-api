@@ -4,21 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class DailyTest extends Model
+class SharedCollection extends Model
 {
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
     protected $fillable = [
         'user_id',
         'card_collection_id',
-        'card_ids'
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'card_ids' => 'array',
-        ];
-    }
 
     public function user(): BelongsTo
     {

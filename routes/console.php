@@ -16,6 +16,3 @@ Schedule::call(function () {
 Schedule::call(function () {
     (new DailyTestController())->generateDailyTest();
 })->dailyAt('00:01'); // Runs at midnight
-//Schedule::call(function () {
-//    (new CardEndCoefficientController())->updateEndCoefficient();
-//})->everyMinute(); // test every minute

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('card_front');
             $table->string('card_back');
-            $table->foreignId('card_collection_id')->constrained();
+            $table->foreignId('card_collection_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

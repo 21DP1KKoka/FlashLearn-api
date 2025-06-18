@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CardCollectionRequest;
 use App\Http\Resources\CardCollectionResource;
 use App\Http\Resources\CardCollectionStatsResource;
+use App\Models\SharedCollection;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use App\Models\CardCollection;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\URL;
 
 class CardCollectionController extends Controller
 {
@@ -22,6 +24,23 @@ class CardCollectionController extends Controller
             return CardCollectionResource::collection(CardCollection::where("user_id", $user->id)->paginate((request()->pagination) ?? 10)->orderBy("id", "DESC")->get());
         }
         return CardCollectionResource::collection(CardCollection::where("user_id", $user->id)->orderBy("id", "DESC")->get());
+    }
+
+    public function getSharedCollections(): ResourceCollection {
+        $user = auth()->user();
+//        dd($user);
+//        $sharedCollectionIds = SharedCollection::where('user_id', $user->id)->pluck("card_collection_id");
+//        dd($sharedCollectionIds);
+
+        $sharedCollectionIds = SharedCollection::where('user_id', $user->id)
+            ->pluck('card_collection_id') // Ensure correct column reference
+            ->toArray(); // Convert collection to array for safer querying
+
+        $sharedCollections = CardCollection::whereIn('id', $sharedCollectionIds)->orderBy('id', 'DESC');
+        if (request()->page) {
+            return CardCollectionResource::collection($sharedCollections->paginate((request()->pagination) ?? 10)->orderBy("id", "DESC")->get());
+        }
+        return CardCollectionResource::collection($sharedCollections->orderBy("id", "DESC")->get());
     }
 
     /**
@@ -81,11 +100,63 @@ class CardCollectionController extends Controller
      * @return JsonResponse
      */
     public function destroy(CardCollection $cardCollection): JsonResponse {
-        $cardCollection->delete();
+        $user = auth()->user();
+
+        if($cardCollection->user_id == $user->id || $user->id == 1) {
+            $cardCollection->dailyTests()->delete();
+            $cardCollection->cardEndCoefficients()->delete();
+            $cardCollection->cardResults()->delete();
+            $cardCollection->sharedCollections()->delete();
+            $cardCollection->cards()->delete();
+
+            $cardCollection->delete();
+            return response()->json([
+                'data' => [
+                    'message' => 'Ieraksts veiksmīgi dzēsts!',
+                ],
+            ], 204);
+        }
         return response()->json([
             'data' => [
-                'message' => 'Ieraksts veiksmīgi dzēsts!',
+                'message' => 'Jums nepieder šī kolekcija',
             ],
-        ], 204);
+        ], 403);
+    }
+
+    public function checkIfNotOwner(int $card_collection_id) {
+        $user = auth()->user();
+        $card_collection = CardCollection::where("id", $card_collection_id)->first();
+        if ($card_collection->user_id == $user->id) {
+            return response()->json([
+                'data' => [
+                    'message' => 'Kolekcijas autors nevar saņemt savu kolekciju!',
+                ],
+            ], 422);
+        }
+        return response()->json([
+            'data' => [
+                'message' => 'Kolekciju drīkst saņemt!',
+            ],
+        ], 200);
+    }
+
+    public function generateCollectionShareLink(int $card_collection_id){
+        return URL::temporarySignedRoute('CollectionShareLink', now()->addHours(3), ['id' => $card_collection_id]);
+    }
+
+    public function receiveSharedCollection(int $card_collection_id){
+        $user = auth()->user();
+        $card_collection = CardCollection::where("id", $card_collection_id)->first();
+        SharedCollection::create([
+            'user_id' => $user->id,
+            'card_collection_id' => $card_collection_id,
+            ]);
+        return response()->json([
+            'data' => [
+                'message' => 'Kolekcija saņemta!',
+                'title' => $card_collection->title,
+            ],
+        ], 200);
+        // 422 for own collection
     }
 }

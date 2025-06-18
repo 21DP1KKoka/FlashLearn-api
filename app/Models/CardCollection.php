@@ -38,4 +38,13 @@ class CardCollection extends Model
     {
         return $this->hasMany(CardEndCoefficient::class);
     }
+    public function dailyTests(): HasMany
+    {
+        return $this->hasMany(DailyTest::class);
+    }
+
+    public function sharedCollections(): HasMany
+    {
+        return $this->hasMany(SharedCollection::class);
+    }
 }

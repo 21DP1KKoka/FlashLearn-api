@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -55,15 +57,23 @@ class UserController extends Controller
         //
     }
 
-    /**
-     * @param UserRequest $request
-     * @param User $user
-     * @return UserResource
-     */
-    public function update(UserRequest $request, User $user): UserResource {
-        $validated = $request->validated();
-        $user->update($validated);
-        return new UserResource($user);
+    public function update(Request $request){
+        $user = auth()->user();
+
+        try {
+            // Validate request
+            $validated = $request->validate([
+                'username' => 'sometimes|string|max:255',
+                'email' => 'sometimes|email|unique:users,email,' . $user->id, // Allow user's own email
+            ]);
+
+            // Update user
+            $user->update($validated);
+
+            return new UserResource($user);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422); // Return JSON errors instead of redirecting
+        }
     }
 
     /**
@@ -71,7 +81,11 @@ class UserController extends Controller
      * @return JsonResponse
      */
     public function destroy(User $user): JsonResponse {
-        $user->delete();
+        $authUser = auth()->user();
+        if($authUser->id == 1) {
+            $user->delete();
+        }
+
         return response()->json([
             'data' => [
                 'message' => 'Ieraksts veiksmīgi dzēsts!',
